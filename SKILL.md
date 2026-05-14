@@ -20,7 +20,7 @@ _resolve_skill_dir() {
     ~/.claude/skills/tts \
     ~/.config/opencode/skills/tts \
     ~/.agents/skills/tts; do
-    [ -e "$candidate/SKILL.md" ] && { dirname "$(readlink -f "$candidate")"; return; }
+    [ -e "$candidate/SKILL.md" ] && { readlink -f "$candidate"; return; }
   done
 }
 SKILL_DIR="$(_resolve_skill_dir)"
@@ -99,7 +99,7 @@ If the flag file **does not exist**, run the following steps:
        ~/.claude/skills/tts \
        ~/.config/opencode/skills/tts \
        ~/.agents/skills/tts; do
-       [ -e "$candidate/SKILL.md" ] && { dirname "$(readlink -f "$candidate")"; return; }
+       [ -e "$candidate/SKILL.md" ] && { readlink -f "$candidate"; return; }
      done
    }
    SKILL_DIR="$(_resolve_skill_dir)"

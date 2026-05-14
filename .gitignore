@@ -7,3 +7,4 @@ node_modules/
 .tool-versions
 scripts/package-lock.json
 scripts/pnpm-lock.yaml
+.setup-done
