@@ -8,3 +8,5 @@ node_modules/
 scripts/package-lock.json
 scripts/pnpm-lock.yaml
 .setup-done
+.agents
+skills-lock.json

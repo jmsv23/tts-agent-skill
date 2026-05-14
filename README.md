@@ -1,13 +1,30 @@
-# tts-skill
+<h1 align="center">tts-skill</h1>
 
-A skill for [Claude Code](https://claude.com/claude-code) and [OpenCode](https://opencode.ai) that turns text into spoken MP3 audio using Google Cloud Gemini TTS.
+<p align="center">
+  <strong>Turn text into lifelike speech with Google Gemini TTS.</strong><br>
+  Built for <a href="https://claude.com/claude-code">Claude Code</a> and <a href="https://opencode.ai">OpenCode</a>.
+</p>
 
-Invoke `/tts <text>` in any supported session. The skill will:
+<p align="center">
+  <a href="#license"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT License"></a>
+  <img src="https://img.shields.io/badge/node-%3E%3D18-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js">
+  <img src="https://img.shields.io/badge/Google%20Cloud-TTS-4285F4?style=flat-square&logo=google-cloud&logoColor=white" alt="Google Cloud">
+  <img src="https://img.shields.io/badge/Claude%20Code-compatible-daaa7c?style=flat-square" alt="Claude Code">
+  <img src="https://img.shields.io/badge/OpenCode-compatible-6366f1?style=flat-square" alt="OpenCode">
+</p>
 
-1. Detect the language (English / Spanish).
-2. Ask which voice you want (Lucia, Laura, Luca, Robert).
-3. Ask which narrative style — one of 5 presets, or a custom prompt.
-4. Generate an MP3 and save it to the current working directory as `tts-YYYYMMDD-HHmmss.mp3`.
+---
+
+> **One command.** Any text. Studio-quality narration in seconds.
+
+Invoke `/tts <text>` and the skill handles the rest:
+
+1. Detects language (English / Spanish).
+2. Lets you pick a voice.
+3. Lets you pick a narrative style, or describe your own.
+4. Generates an MP3 saved to your working directory as `tts-YYYYMMDD-HHmmss.mp3`.
+
+---
 
 ## Install
 
@@ -32,7 +49,7 @@ cd ~/projects/tts-skill/scripts && npm install
 
 ### Environment variables
 
-Set these in `~/.zshrc` (or equivalent):
+Add these to your shell profile (`~/.zshrc`, `~/.bashrc`, etc.):
 
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
@@ -42,9 +59,83 @@ export GOOGLE_CLOUD_PROJECT_ID=my-gcp-project
 
 The service account needs **Cloud Text-to-Speech API** access.
 
+---
+
+## Use
+
+Inside Claude Code or OpenCode:
+
+```
+/tts Once upon a time there was a small brave fox.
+```
+
+Or call the script directly from your shell:
+
+```bash
+node ~/.claude/skills/tts/scripts/tts.mjs \
+  --voice lucia --lang english --style storybook \
+  --text "Hello world" --out ./hello.mp3
+```
+
+---
+
+## Voices
+
+| ID | Gemini name | Character | Aura |
+|---|---|---|---|
+| `lucia` | Kore | Warm and expressive | 🌅 |
+| `laura` | Laomedeia | Musical and enchanting | 🎵 |
+| `luca` | Enceladus | Deep and trustworthy | 🧔 |
+| `robert` | Fenrir | Bold and animated | 🦁 |
+
+---
+
+## Style presets
+
+| Preset | Vibe |
+|---|---|
+| `storybook` | Warm, immersive children's audiobook narrator |
+| `dramatic` | Theatrical, varied intonation, suspenseful pauses |
+| `calm` | Slow, meditative, soft and low-energy |
+| `news-anchor` | Clear, neutral, authoritative, even pacing |
+| `playful` | Energetic, expressive, conversational, light humor |
+| **Custom** | Choose "Other" and describe the tone in one sentence; the skill builds a tailored prompt for you. |
+
+Presets live in `presets/styles.json` — add your own or edit existing ones.
+
+---
+
+## Cost
+
+The skill uses the `gemini-2.5-flash-tts` model, priced at **$10 per 1,000,000 input tokens**.
+
+### What does that buy you?
+
+| Unit | Amount for $10 |
+|---|---|
+| Tokens | 1,000,000 |
+| Words (≈ 0.75 words/token) | ~750,000 words |
+| Audio at 140 wpm narration | ~5,350 min — about **89 hours** |
+| Pages (≈ 250 words/page) | ~3,000 pages |
+
+**Cost per page:** ~$0.003 &nbsp;·&nbsp; **Cost per book:** ~$1.00
+
+### Audiobook analogy
+
+A standard novel (~300 pages, ~75,000 words) becomes about **9 hours** of audio at 140 wpm.
+
+> 💰 With $10 you can generate the equivalent of **~10 complete audiobooks**. The entire Harry Potter series (~1,084,000 words, ~130 hours of audio) would cost around **$14**.
+
+Pricing reference: [Google Cloud Text-to-Speech pricing](https://cloud.google.com/text-to-speech/pricing)
+
+---
+
 ## Google Cloud setup
 
-The skill calls `texttospeech.googleapis.com` using a service account key. Follow these steps to create one.
+The skill calls `texttospeech.googleapis.com` via a service account key. If you don't have one yet, follow the steps below.
+
+<details>
+<summary><strong>🔐 Click to expand: full setup guide</strong></summary>
 
 ### 1. Create or select a project
 
@@ -90,66 +181,11 @@ mv ~/Downloads/my-project-abc123.json ~/.config/gcloud/tts-skill-sa.json
 export GOOGLE_APPLICATION_CREDENTIALS="$HOME/.config/gcloud/tts-skill-sa.json"
 ```
 
-Add the `export` line to your `~/.zshrc` (or `~/.bashrc`) so it persists across sessions.
+Add the `export` line to your shell profile so it persists across sessions.
 
-## Use
+</details>
 
-In Claude Code or OpenCode:
-
-```
-/tts Once upon a time there was a small brave fox.
-```
-
-Or from the shell directly:
-
-```bash
-node ~/.claude/skills/tts/scripts/tts.mjs \
-  --voice lucia --lang english --style storybook \
-  --text "Hello world" --out ./hello.mp3
-```
-
-## Voices
-
-| ID     | Gemini name | Character                                                            |
-|--------|-------------|----------------------------------------------------------------------|
-| lucia  | Kore        | Warm and expressive                                                  |
-| laura  | Laomedeia   | Musical and enchanting                                               |
-| luca   | Enceladus   | Deep and trustworthy                                                 |
-| robert | Fenrir      | Bold and animated                                                    |
-
-## Style presets
-
-- `storybook` — Warm, immersive children's audiobook narrator
-- `dramatic` — Theatrical, varied intonation, suspenseful pauses
-- `calm` — Slow, meditative, soft and low-energy
-- `news-anchor` — Clear, neutral, authoritative, even pacing
-- `playful` — Energetic, expressive, conversational, light humor
-- **Custom** — Don't see what you need? Choose "Other" and the skill will ask you one question ("Describe the tone, pacing, and target audience in one sentence") and build a tailored narrator prompt from your answer.
-
-Presets live in `presets/styles.json` — add your own or edit existing ones.
-
-## Cost
-
-The skill uses the `gemini-2.5-flash-tts` model, priced at **$10 per 1,000,000 input tokens**.
-
-### What does that buy you?
-
-| Unit | Amount for $10 |
-|------|----------------|
-| Tokens | 1,000,000 |
-| Words (≈ 0.75 words/token) | ~750,000 words |
-| Audio at 140 wpm narration | ~5,350 min — about **89 hours** |
-| Pages (≈ 250 words/page) | ~3,000 pages |
-
-**Cost per page:** ~$0.003 &nbsp;·&nbsp; **Cost per book:** ~$1.00
-
-### Audiobook analogy
-
-A standard novel — say, around 300 pages — contains roughly 75,000 words. Narrated at a comfortable audiobook pace (≈ 140 words per minute) that becomes about 9 hours of audio.
-
-With $10 you can generate the equivalent of **~10 complete audiobooks**. The entire Harry Potter series (≈ 1,084,000 words, ~130 hours of audio) would cost around **$14**.
-
-> Pricing reference: [Google Cloud Text-to-Speech pricing](https://cloud.google.com/text-to-speech/pricing)
+---
 
 ## Tip: use pnpm instead of npm
 
@@ -160,6 +196,8 @@ The install commands above use `npm`, but `pnpm` is a better choice:
 - **Stricter dependency resolution** — prevents packages from accidentally accessing dependencies they didn't declare, catching issues that npm silently ignores.
 
 To use it, replace `npm install` with `pnpm install` in the commands above. If you don't have pnpm yet: `npm install -g pnpm`.
+
+---
 
 ## License
 
