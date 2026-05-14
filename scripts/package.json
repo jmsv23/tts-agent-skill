@@ -1,0 +1,17 @@
+{
+  "name": "tts-skill-script",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "CLI generator for the /tts Claude skill — Google Gemini TTS to local MP3",
+  "main": "tts.mjs",
+  "bin": {
+    "tts-skill": "./tts.mjs"
+  },
+  "dependencies": {
+    "google-auth-library": "^9.14.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
